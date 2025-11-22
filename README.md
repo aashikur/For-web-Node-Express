@@ -219,3 +219,68 @@ Node.js is built on an event-driven model, which makes it highly efficient for h
 | **Best For** | I/O operations | CPU tasks |
 | **Context Switch** | Minimal | Heavy |
 | **Learning Curve** | Moderate | Steep | 
+
+---
+
+## Is Node.js Multi-Threaded?
+
+### The Simple Answer: **Single-Threaded by Default, But Not Completely**
+
+Node.js appears single-threaded to the developer, but it's actually a hybrid system:
+
+### JavaScript Execution: Single-Threaded ✓
+- Your JavaScript code runs on **ONE main thread**
+- Event loop processes callbacks sequentially
+- No concurrent code execution in JavaScript
+
+### Behind the Scenes: Multi-Threaded (Hidden)
+- **libuv Thread Pool** manages background threads
+- Default: 4 threads (configurable via `UV_THREADPOOL_SIZE`)
+- Handles:
+  - File system operations
+  - DNS lookups
+  - Crypto operations
+  - Some compression tasks
+- **You don't directly control these threads**
+
+### Optional: Add More Threads Manually
+- **Worker Threads module** allows true parallelism
+- For CPU-intensive tasks
+- You create and manage them explicitly
+- Can utilize multiple CPU cores
+
+### Visual Breakdown:
+
+```
+┌─────────────────────────────────────────┐
+│      Node.js Application                │
+├─────────────────────────────────────────┤
+│                                         │
+│  🟢 Main Thread (Your JavaScript Code) │
+│     - Single-threaded                   │
+│     - Event loop                        │
+│     - Processes callbacks sequentially  │
+│                                         │
+│  🟡 libuv Thread Pool (Hidden)          │
+│     - 4 threads by default              │
+│     - File I/O, DNS, Crypto             │
+│     - Automatic management              │
+│                                         │
+│  🟠 Worker Threads (Optional)           │
+│     - You create manually               │
+│     - CPU-intensive tasks               │
+│     - True parallelism                  │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+### Key Takeaway:
+
+**Node.js ≠ Traditional Multi-Threaded Server (Java/PHP)**
+
+Node.js = Single-threaded by default + Hidden thread pool for I/O + Optional Worker Threads for heavy computing
+
+This hybrid approach gives Node.js the best of both worlds:
+- ✓ Simplicity of single-threaded programming
+- ✓ Efficiency of asynchronous I/O
+- ✓ Power of multi-threading when needed 
