@@ -283,4 +283,108 @@ Node.js = Single-threaded by default + Hidden thread pool for I/O + Optional Wor
 This hybrid approach gives Node.js the best of both worlds:
 - ✓ Simplicity of single-threaded programming
 - ✓ Efficiency of asynchronous I/O
-- ✓ Power of multi-threading when needed 
+- ✓ Power of multi-threading when needed
+
+---
+
+## Browser Runtime vs Node.js Runtime
+
+### Global Objects
+
+| Aspect | Browser Runtime | Node.js Runtime |
+|--------|-----------------|-----------------|
+| **Global Object** | `window` | `global` |
+| **Module System** | ESM (built-in) | CommonJS or ESM |
+| **DOM Access** | ✓ Available | ✗ Not available |
+| **File System** | ✗ Not available | ✓ Available |
+
+### Scope and Variables
+
+**Both Browser and Node.js support:**
+- Block scope: `var`, `let`, `const`
+- Function scope
+- IIFE (Immediately Invoked Function Expression): `(function(){})()`
+
+### Code Example:
+
+```javascript
+// Browser Runtime
+console.log(window);        // Global object
+console.log(document);      // DOM access
+
+// Node.js Runtime
+console.log(global);        // Global object
+console.log(module);        // Module system
+```
+
+---
+
+## Module Systems in JavaScript
+
+### Overview
+
+JavaScript originally had **no built-in module system**. Different module systems emerged over time:
+
+### 1. CommonJS (Node.js Native)
+
+**When:** Early Node.js standard
+**Syntax:**
+```javascript
+// Export
+module.exports = { greet: () => 'Hello' };
+
+// Import
+const myModule = require('./myModule');
+```
+
+**Characteristics:**
+- Synchronous loading
+- Used in Node.js by default (until recently)
+- `require()` and `module.exports`
+- Not part of ES standard
+
+### 2. ESM (ECMAScript Module) - Modern Standard
+
+**When:** ES6 (2015) and later
+**Syntax:**
+```javascript
+// Export
+export const greet = () => 'Hello';
+export default { /* ... */ };
+
+// Import
+import { greet } from './myModule.js';
+import defaultExport from './myModule.js';
+```
+
+**Characteristics:**
+- Asynchronous loading
+- Built into JavaScript standard
+- `import` and `export`
+- Supported in browsers and modern Node.js
+- Tree-shakeable (dead code elimination)
+
+### Key Differences:
+
+| Feature | CommonJS | ESM |
+|---------|----------|-----|
+| **Syntax** | `require()` / `module.exports` | `import` / `export` |
+| **Loading** | Synchronous | Asynchronous |
+| **Built-in** | Node.js only | JavaScript standard |
+| **Tree-shaking** | No | Yes |
+| **Browser Support** | No (native) | Yes |
+| **Node.js Support** | Yes (default) | Yes (with .mjs or type: "module") |
+
+### Using ESM in Node.js:
+
+**Method 1:** Rename file to `.mjs`
+```
+myModule.mjs
+```
+
+**Method 2:** Add to `package.json`
+```json
+{
+  "type": "module"
+}
+```  
